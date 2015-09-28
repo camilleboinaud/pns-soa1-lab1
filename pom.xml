@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>fr.unice.polytech.si5.soa1.lab1</groupId>
+    <artifactId>ws-minibo</artifactId>
+    <version>1.0</version>
+    <packaging>pom</packaging>
+    <name>SOA-1 :: LAB-1 WS-MINIBO</name>
+
+    <modules>
+        <module>ws-rest</module>
+        <module>ws-soap</module>
+    </modules>
+
+    <properties>
+        <!-- Version for dependencies (CXF + JUnit) -->
+        <junit.version>4.12</junit.version>
+        <cxf.version>3.1.2</cxf.version>
+        <!-- OSGI bundle information (needed to deploy on ServiceMix) -->
+        <bundle.symbolicName>${project.artifactId}</bundle.symbolicName>
+        <bundle.namespace>fr.unice.polytech.si5.soa1.lab1</bundle.namespace>
+    </properties>
+
+    <dependencies>
+        <!-- JUnit for unit tests purpose -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+</project>

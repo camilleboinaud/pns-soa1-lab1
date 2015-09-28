@@ -1,0 +1,29 @@
+Manifest-Version: 1.0
+Bnd-LastModified: 1443472216425
+Build-Jdk: 1.7.0_79
+Built-By: camille
+Bundle-ClassPath: .,org.apache.servicemix.specs.jsr339-api-2.0-2.5.0.jar
+ ,org.apache.servicemix.bundles.commons-httpclient-3.1_7.jar,commons-log
+ ging-1.0.4.jar,org.apache.servicemix.bundles.commons-codec-1.3_2.jar,js
+ on-20141113.jar
+Bundle-ManifestVersion: 2
+Bundle-Name: SOA-1 :: LAB-1 WS-MINIBO :: WS-REST
+Bundle-SymbolicName: ws-rest-minibo
+Bundle-Version: 1.0
+Created-By: Apache Maven Bundle Plugin
+Embed-Dependency: *;scope=compile;inline=false
+Embed-Transitive: true
+Embedded-Artifacts: org.apache.servicemix.specs.jsr339-api-2.0-2.5.0.jar
+ ;g="org.apache.servicemix.specs";a="org.apache.servicemix.specs.jsr339-
+ api-2.0";v="2.5.0",org.apache.servicemix.bundles.commons-httpclient-3.1
+ _7.jar;g="org.apache.servicemix.bundles";a="org.apache.servicemix.bundl
+ es.commons-httpclient";v="3.1_7",commons-logging-1.0.4.jar;g="commons-l
+ ogging";a="commons-logging";v="1.0.4",org.apache.servicemix.bundles.com
+ mons-codec-1.3_2.jar;g="org.apache.servicemix.bundles";a="org.apache.se
+ rvicemix.bundles.commons-codec";v="1.3_2",json-20141113.jar;g="org.json
+ ";a="json";v="20141113"
+Import-Package: javax.xml.bind.annotation,javax.xml.bind,javax.ws.rs;ver
+ sion="[2.0,3)",javax.ws.rs.core;version="[2.0,3)",javax.ws.rs.ext;versi
+ on="[2.0,3)",org.osgi.service.blueprint
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+Tool: Bnd-2.4.1.201501161923
