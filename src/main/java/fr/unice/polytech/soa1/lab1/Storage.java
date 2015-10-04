@@ -21,8 +21,8 @@ public class Storage {
         return database.get(type).create(object);
     }
 
-    public static boolean delete(ContentType type, StorableContent object){
-        return database.get(type).delete(object);
+    public static boolean delete(ContentType type, Integer id){
+        return database.get(type).delete(id);
     }
 
     public static StorableContent read(ContentType type, Integer index){
@@ -54,9 +54,9 @@ public class Storage {
             return true;
         }
 
-        boolean delete(T t){
-            if(stock.containsValue(t)){
-                stock.remove(t);
+        boolean delete(Integer id){
+            if(stock.containsKey(id)){
+                stock.remove(id);
                 return true;
             }
             return false;

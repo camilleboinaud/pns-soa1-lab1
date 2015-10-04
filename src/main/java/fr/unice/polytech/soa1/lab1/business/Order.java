@@ -1,9 +1,13 @@
 package fr.unice.polytech.soa1.lab1.business;
 
+import fr.unice.polytech.soa1.lab1.Storage;
+import fr.unice.polytech.soa1.lab1.utils.ContentType;
 import fr.unice.polytech.soa1.lab1.utils.Pair;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 /**
@@ -13,34 +17,47 @@ import java.util.HashMap;
 @XmlType(name = "order")
 public class Order extends StorableContent{
 
-    private HashMap<Integer, Pair<Item, Integer>> cart = null;
+    private Collection<Pair<Item, Integer>> cart = null;
     private Customer customer;
     private Package packaging = null;
     private Delivery delivery = null;
 
     public Order(){
         super();
-        this.cart = new HashMap<Integer, Pair<Item, Integer>>();
+        this.packaging = (Package)Storage.findAll(ContentType.PACKAGE).iterator().next();
+        this.delivery = (Delivery)Storage.findAll(ContentType.DELIVERY).iterator().next();
+        this.cart = new ArrayList<Pair<Item, Integer>>();
     }
 
     @XmlElement(required = true)
-    public HashMap<Integer, Pair<Item, Integer>> getCart() {
+    public Collection<Pair<Item, Integer>> getCart() {
         return cart;
     }
 
+    public void setCart(Collection<Pair<Item, Integer>> cart){
+        this.cart = cart;
+    }
+
     public boolean addItemToCart(Item item, Integer number){
-        if(!cart.containsKey(item.getId()) && number != 0) {
-            cart.put(item.getId(), new Pair<Item, Integer>(item, number));
+        if(number >= 0) {
+            for(Pair<Item, Integer> pair : cart){
+                if(pair.getLeft() == item){
+                    cart.remove(pair);
+                    break;
+                }
+            }
+            cart.add(new Pair<Item, Integer>(item, number));
             return true;
         }
         return false;
     }
 
-    public boolean updateItemInCart(Item item, Integer number){
-        if(cart.containsKey(item.getId())){
-            number += cart.get(item.getId()).getRight();
-            cart.remove(item.getId());
-            return addItemToCart(item, number);
+    public boolean removeItemFromCart(Item item){
+        for(Pair<Item, Integer> pair : cart){
+            if(pair.getLeft() == item){
+                cart.remove(pair);
+                return true;
+            }
         }
         return false;
     }

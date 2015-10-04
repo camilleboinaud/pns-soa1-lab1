@@ -7,6 +7,7 @@ import fr.unice.polytech.soa1.lab1.utils.Pair;
 import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.jws.WebService;
+import javax.xml.bind.annotation.XmlElement;
 import java.util.Collection;
 
 /**
@@ -28,22 +29,24 @@ public interface OrderService {
     Collection<Package> listPackages();
 
     @WebResult(name = "OrderService_display_item")
-    Item displayPackage(
+    Package displayPackage(
             @WebParam(name = "packageId") Integer packageId
     );
 
-    @WebResult(name = "OrderService_add_item_cart")
-    boolean addItemToCart(
+    @WebResult(name = "OrderService_start_order")
+    Order startOrder();
+
+    @WebResult(name = "OrderService_update_item_cart")
+    Order updateItemToCart(
             @WebParam(name = "orderId") Integer orderId,
             @WebParam(name = "itemId") Integer itemId,
             @WebParam(name = "quantity") Integer quantity
     );
 
-    @WebResult(name = "OrderService_update_item_cart")
-    boolean updateItemsIntoCart(
+    @WebResult(name = "OrderService_remove_item_cart")
+    Order removeItemFromCart(
             @WebParam(name = "orderId") Integer orderId,
-            @WebParam(name = "itemId") Integer itemId,
-            @WebParam(name = "quantity") Integer quantity
+            @WebParam(name = "itemId") Integer itemId
     );
 
     @WebResult(name = "OrderService_update_packaging")

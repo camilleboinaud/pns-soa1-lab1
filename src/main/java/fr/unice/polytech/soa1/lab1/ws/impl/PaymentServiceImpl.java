@@ -31,9 +31,8 @@ public class PaymentServiceImpl implements PaymentService {
         Order order = (Order)Storage.read(ContentType.ORDER, orderId);
         double amount = 0.0;
 
-        for(Iterator it = order.getCart().entrySet().iterator(); it.hasNext();){
-            Pair<Item, Integer> article = (Pair)((Map.Entry)it.next()).getValue();
-            amount += article.getRight()*article.getLeft().getPrice();
+        for(Pair<Item, Integer> pair : order.getCart()){
+            amount += pair.getRight()*pair.getLeft().getPrice();
         }
         amount += order.getDelivery().getPrice();
         amount += order.getPackaging().getPrice();
