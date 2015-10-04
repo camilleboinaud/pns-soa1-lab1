@@ -1,8 +1,9 @@
-package fr.unice.polytech.soa1.lab1.soap;
+package fr.unice.polytech.soa1.lab1.ws.impl;
 
 import fr.unice.polytech.soa1.lab1.Storage;
 import fr.unice.polytech.soa1.lab1.business.*;
 import fr.unice.polytech.soa1.lab1.utils.*;
+import fr.unice.polytech.soa1.lab1.ws.PaymentService;
 
 import javax.jws.WebService;
 import java.util.Iterator;
@@ -13,10 +14,10 @@ import java.util.Map;
  */
 
 @WebService(
-        targetNamespace   = "http://informatique.polytech.unice.fr/soa1/lab1/soap",
+        targetNamespace   = "http://informatique.polytech.unice.fr/soa1/lab1/ws",
         portName          = "PaymentServicePort",
         serviceName       = "PaymentService",
-        endpointInterface = "fr.unice.polytech.soa1.lab1.soap.PaymentService"
+        endpointInterface = "fr.unice.polytech.soa1.lab1.ws.PaymentService"
 )
 public class PaymentServiceImpl implements PaymentService {
 

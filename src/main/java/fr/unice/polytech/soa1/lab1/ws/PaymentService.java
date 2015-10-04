@@ -1,4 +1,4 @@
-package fr.unice.polytech.soa1.lab1.soap;
+package fr.unice.polytech.soa1.lab1.ws;
 
 import fr.unice.polytech.soa1.lab1.business.Invoice;
 

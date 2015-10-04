@@ -28,12 +28,21 @@ public class Order extends StorableContent{
         return cart;
     }
 
-    public void addToCart(Item item, Integer number){
+    public boolean addItemToCart(Item item, Integer number){
+        if(!cart.containsKey(item.getId()) && number != 0) {
+            cart.put(item.getId(), new Pair<Item, Integer>(item, number));
+            return true;
+        }
+        return false;
+    }
+
+    public boolean updateItemInCart(Item item, Integer number){
         if(cart.containsKey(item.getId())){
             number += cart.get(item.getId()).getRight();
             cart.remove(item.getId());
+            return addItemToCart(item, number);
         }
-        cart.put(item.getId(), new Pair<Item, Integer>(item, number));
+        return false;
     }
 
     @XmlElement(required = true)

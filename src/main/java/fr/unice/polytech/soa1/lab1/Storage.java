@@ -120,8 +120,8 @@ public class Storage {
         order.setCustomer((Customer)read(ContentType.CUSTOMER,11));
         order.setDelivery((Delivery)read(ContentType.DELIVERY, 9));
         order.setPackaging((Package)read(ContentType.PACKAGE, 8));
-        order.addToCart((Item)read(ContentType.ITEM, 4), 25);
-        order.addToCart((Item)read(ContentType.ITEM, 2), 25);
+        order.addItemToCart((Item) read(ContentType.ITEM, 4), 25);
+        order.addItemToCart((Item) read(ContentType.ITEM, 2), 25);
         //13:
         create(ContentType.ORDER, order);
 

@@ -21,17 +21,6 @@
     </properties>
 
     <dependencies>
-        <!-- CXF HTTP/REST implementation -->
-        <dependency>
-            <groupId>org.apache.servicemix.specs</groupId>
-            <artifactId>org.apache.servicemix.specs.jsr339-api-2.0</artifactId>
-            <version>2.5.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.servicemix.bundles</groupId>
-            <artifactId>org.apache.servicemix.bundles.commons-httpclient</artifactId>
-            <version>3.1_7</version>
-        </dependency>
         <!-- Json data model -->
         <dependency>
             <groupId>org.json</groupId>
