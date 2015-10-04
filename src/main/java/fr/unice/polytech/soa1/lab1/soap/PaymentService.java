@@ -13,19 +13,19 @@ import javax.jws.WebService;
 @WebService(name="PaymentService")
 public interface PaymentService {
 
-    @WebResult(name="PaymentService::amount")
-    int calculateAmount(
+    @WebResult(name="PaymentService_amount")
+    double calculateAmount(
             @WebParam(name="orderId") int orderId
     );
 
-    @WebResult(name="PaymentService::pay")
+    @WebResult(name="PaymentService_pay")
     Invoice payOrder(
             @WebParam(name="orderId") int orderId,
             @WebParam(name="creditCardNumber") String creditCardNumber,
             @WebParam(name="email") String email
     );
 
-    @WebResult(name="PaymentService::invoice")
+    @WebResult(name="PaymentService_invoice")
     Invoice issueInvoice(
             @WebParam(name="orderId") int orderId,
             @WebParam(name="email") String email

@@ -5,7 +5,7 @@ package fr.unice.polytech.soa1.lab1.utils;
  */
 public enum ContentType {
 
-    BILL,
+    INVOICE,
     CUSTOMER,
     DELIVERY,
     ITEM,

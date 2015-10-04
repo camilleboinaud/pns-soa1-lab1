@@ -1,8 +1,12 @@
 package fr.unice.polytech.soa1.lab1.soap;
 
-import fr.unice.polytech.soa1.lab1.business.Invoice;
+import fr.unice.polytech.soa1.lab1.Storage;
+import fr.unice.polytech.soa1.lab1.business.*;
+import fr.unice.polytech.soa1.lab1.utils.*;
 
 import javax.jws.WebService;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by camille on 30/09/15.
@@ -21,8 +25,19 @@ public class PaymentServiceImpl implements PaymentService {
      * @param orderId
      * @return
      */
-    public int calculateAmount(int orderId) {
-        return 0;
+    public double calculateAmount(int orderId) {
+
+        Order order = (Order)Storage.read(ContentType.ORDER, orderId);
+        double amount = 0.0;
+
+        for(Iterator it = order.getCart().entrySet().iterator(); it.hasNext();){
+            Pair<Item, Integer> article = (Pair)((Map.Entry)it.next()).getValue();
+            amount += article.getRight()*article.getLeft().getPrice();
+        }
+        amount += order.getDelivery().getPrice();
+        amount += order.getPackaging().getPrice();
+
+        return amount;
     }
 
     /**
@@ -33,7 +48,18 @@ public class PaymentServiceImpl implements PaymentService {
      * @return
      */
     public Invoice payOrder(int orderId, String creditCardNumber, String email) {
-        return new Invoice();
+
+        Invoice invoice = null;
+        Order order = (Order)Storage.read(ContentType.ORDER, orderId);
+
+        if(order.getCustomer().getEmail().equals(email) && (Integer.parseInt(creditCardNumber)%2 == 0)) {
+            invoice = getInvoice(order);
+            if(!invoice.isPaid()) {
+                invoice.setPaid();
+            }
+        }
+
+        return invoice;
     }
 
     /**
@@ -43,7 +69,31 @@ public class PaymentServiceImpl implements PaymentService {
      * @return
      */
     public Invoice issueInvoice(int orderId, String email) {
-        return new Invoice();
+
+        Order order = (Order)Storage.read(ContentType.ORDER, orderId);
+
+        if(order.getCustomer().getEmail().equals(email)){
+            return getInvoice(order);
+        }
+
+        return null;
+    }
+
+
+    private static Invoice getInvoice(Order order){
+        Invoice invoice;
+
+        for(Iterator it = Storage.findAll(ContentType.INVOICE).iterator(); it.hasNext();){
+            invoice = (Invoice)it.next();
+            if(invoice.getOrder().getId().equals(order.getId())){
+                return invoice;
+            }
+        }
+
+        invoice = new Invoice(order);
+        Storage.create(ContentType.INVOICE, invoice);
+
+        return invoice;
     }
 
 }

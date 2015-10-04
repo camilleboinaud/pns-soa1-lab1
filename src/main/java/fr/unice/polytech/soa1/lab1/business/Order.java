@@ -28,6 +28,14 @@ public class Order extends StorableContent{
         return cart;
     }
 
+    public void addToCart(Item item, Integer number){
+        if(cart.containsKey(item.getId())){
+            number += cart.get(item.getId()).getRight();
+            cart.remove(item.getId());
+        }
+        cart.put(item.getId(), new Pair<Item, Integer>(item, number));
+    }
+
     @XmlElement(required = true)
     public Customer getCustomer() {
         return customer;
