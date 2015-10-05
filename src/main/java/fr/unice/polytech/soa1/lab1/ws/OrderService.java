@@ -37,7 +37,7 @@ public interface OrderService {
     ) throws RequestFailException, ContentNotFoundException;
 
     @WebResult(name = "OrderService_update_packaging")
-    boolean updatePackagingMode(
+    Order updatePackagingMode(
             @WebParam(name = "orderId") Integer orderId,
             @WebParam(name = "packageId") Integer packageId
     ) throws ContentNotFoundException;
@@ -48,7 +48,7 @@ public interface OrderService {
     ) throws ContentNotFoundException;
 
     @WebResult(name = "OrderService_empty_cart")
-    boolean emptyCart(
+    Order emptyCart(
             @WebParam(name = "orderId") Integer orderId
     ) throws ContentNotFoundException;
 

@@ -51,7 +51,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = (Order) Storage.read(ContentType.ORDER, orderId);
         if(order != null) {
             if (order.addItemToCart((Item) Storage.read(ContentType.ITEM, itemId), quantity)) {
-                return order;
+                return Storage.merge(ContentType.ORDER, order);
             } else {
                 throw new RequestFailException("Resquest failed : abort. Please check parameters validity.");
             }
@@ -88,14 +88,14 @@ public class OrderServiceImpl implements OrderService {
      * @param orderId
      * @param packageId
      */
-    public boolean updatePackagingMode(Integer orderId, Integer packageId)
+    public Order updatePackagingMode(Integer orderId, Integer packageId)
             throws ContentNotFoundException {
 
         Order order = (Order) Storage.read(ContentType.ORDER, orderId);
 
         if(order != null) {
             order.setPackaging((Package) Storage.read(ContentType.PACKAGE, packageId));
-            return true;
+            return Storage.merge(ContentType.ORDER, order);
         } else  {
             throw new ContentNotFoundException("The specified order does not exist");
         }
@@ -119,11 +119,11 @@ public class OrderServiceImpl implements OrderService {
      * Empty the cart associated to the specified order
      * @param orderId
      */
-    public boolean emptyCart(Integer orderId) throws ContentNotFoundException{
+    public Order emptyCart(Integer orderId) throws ContentNotFoundException{
         Order order = (Order) Storage.read(ContentType.ORDER, orderId);
         if(order != null) {
             order.setCart(new ArrayList<Pair<Item, Integer>>());
-            return true;
+            return Storage.merge(ContentType.ORDER, order);
         } else {
             throw new ContentNotFoundException("The specified order does not exist");
         }

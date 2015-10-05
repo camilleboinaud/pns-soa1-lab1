@@ -37,6 +37,10 @@ public class Storage {
         return collection;
     }
 
+    public static <S extends StorableContent> S merge(ContentType contentType, S s){
+        return (S) database.get(contentType).merge(s);
+    }
+
 
     private static class Stock<T extends StorableContent>{
 
@@ -63,6 +67,11 @@ public class Storage {
 
         T read(Integer id){
             return (stock.containsKey(id)) ? stock.get(id) : null;
+        }
+
+        T merge(T t){
+            delete(t.getId());
+            return create(t);
         }
 
         Collection<T> getAll(){
