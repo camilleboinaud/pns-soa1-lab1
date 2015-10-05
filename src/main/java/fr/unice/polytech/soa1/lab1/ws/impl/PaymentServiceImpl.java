@@ -65,6 +65,7 @@ public class PaymentServiceImpl implements PaymentService {
                 if (!invoice.isPaid()) {
                     invoice.setPaid();
                 }
+                invoice.getOrder().setStatus(OrderStatus.IN_PREPARATION);
                 return invoice;
             } else {
                 throw new RequestFailException("Payment failed, user email doesn't match or credit card number is not valid.");

@@ -2,6 +2,7 @@ package fr.unice.polytech.soa1.lab1.business;
 
 import fr.unice.polytech.soa1.lab1.Storage;
 import fr.unice.polytech.soa1.lab1.utils.ContentType;
+import fr.unice.polytech.soa1.lab1.utils.OrderStatus;
 import fr.unice.polytech.soa1.lab1.utils.Pair;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -20,12 +21,14 @@ public class Order extends StorableContent{
     private Customer customer;
     private Package packaging = null;
     private Delivery delivery = null;
+    private OrderStatus status = null;
 
     public Order(){
         super();
         this.packaging = (Package)Storage.findAll(ContentType.PACKAGE).iterator().next();
         this.delivery = (Delivery)Storage.findAll(ContentType.DELIVERY).iterator().next();
         this.cart = new ArrayList<Pair<Item, Integer>>();
+        this.status = OrderStatus.NOT_VALIDATED;
     }
 
     @XmlElement(required = true)
@@ -86,6 +89,15 @@ public class Order extends StorableContent{
 
     public void setDelivery(Delivery delivery) {
         this.delivery = delivery;
+    }
+
+    @XmlElement(required = true)
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(OrderStatus status) {
+        this.status = status;
     }
 
     @Override

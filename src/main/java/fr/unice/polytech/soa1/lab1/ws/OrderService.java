@@ -2,6 +2,7 @@ package fr.unice.polytech.soa1.lab1.ws;
 
 import fr.unice.polytech.soa1.lab1.business.*;
 import fr.unice.polytech.soa1.lab1.business.Package;
+import fr.unice.polytech.soa1.lab1.utils.OrderStatus;
 import fr.unice.polytech.soa1.lab1.utils.Pair;
 import fr.unice.polytech.soa1.lab1.utils.exceptions.ContentNotFoundException;
 import fr.unice.polytech.soa1.lab1.utils.exceptions.RequestFailException;
@@ -18,22 +19,6 @@ import java.util.Collection;
 
 @WebService(name="OrderService")
 public interface OrderService {
-
-    @WebResult(name = "OrderService_list_items")
-    Collection<Item> listItems();
-
-    @WebResult(name = "OrderService_display_item")
-    Item displayItem (
-            @WebParam(name = "itemId") Integer itemId
-    ) throws ContentNotFoundException;
-
-    @WebResult(name = "OrderService_list_packages")
-    Collection<Package> listPackages();
-
-    @WebResult(name = "OrderService_display_item")
-    Package displayPackage(
-            @WebParam(name = "packageId") Integer packageId
-    ) throws ContentNotFoundException;
 
     @WebResult(name = "OrderService_start_order")
     Order startOrder();
@@ -67,16 +52,15 @@ public interface OrderService {
             @WebParam(name = "orderId") Integer orderId
     ) throws ContentNotFoundException;
 
-
-    @WebResult(name = "OrderService_display_order")
-    Order displayOrder(
-            @WebParam(name = "orderId") Integer orderId
-    ) throws ContentNotFoundException;
-
     @WebResult(name = "OrderService_cancel_order")
     boolean cancelOrder(
             @WebParam(name = "orderId") Integer orderId
     );
 
+    @WebResult(name = "DeliveryService_track_status")
+    OrderStatus trackOrderStatus(
+            @WebParam(name = "orderId") int orderId,
+            @WebParam(name = "email") String email
+    ) throws NullPointerException,IllegalArgumentException;
 
 }

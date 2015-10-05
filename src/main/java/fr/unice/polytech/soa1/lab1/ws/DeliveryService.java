@@ -2,6 +2,7 @@ package fr.unice.polytech.soa1.lab1.ws;
 
 import com.sun.istack.NotNull;
 import fr.unice.polytech.soa1.lab1.business.*;
+import fr.unice.polytech.soa1.lab1.utils.OrderStatus;
 import fr.unice.polytech.soa1.lab1.utils.exceptions.ContentNotFoundException;
 
 import javax.jws.WebParam;
@@ -16,17 +17,8 @@ import java.util.Collection;
 @WebService(name = "DeliveryService")
 public interface DeliveryService {
 
-
-    @WebResult(name = "DeliveryService_list_deliveries")
-    Collection<Delivery> listDeliveriesModes();
-
-    @WebResult(name = "DeliveryService_display_delivery")
-    Delivery displayDeliveryMode(
-            @WebParam(name = "deliveryId") int deliveryId
-    ) throws NullPointerException,IllegalArgumentException;
-
     @WebResult(name = "DeliveryService_provide_customer_data")
-    Customer provideCustomerData(
+    Customer provideCustomerShipmentData(
             @WebParam(name = "orderId") int orderId,
             @WebParam(name = "firstname") String firstname,
             @WebParam(name = "lastname") String lastname,
@@ -43,12 +35,5 @@ public interface DeliveryService {
             @WebParam(name = "orderId") int orderId,
             @WebParam(name = "deliveryId") int deliveryId
     ) throws NullPointerException,IllegalArgumentException;
-
-    @WebResult(name = "DeliveryService_track_delivery")
-    Delivery trackDeliveryStatus(
-            @WebParam(name = "orderId") int orderId,
-            @WebParam(name = "email") String email
-    ) throws NullPointerException,IllegalArgumentException;
-
 
 }

@@ -6,6 +6,7 @@ import fr.unice.polytech.soa1.lab1.business.Delivery;
 import fr.unice.polytech.soa1.lab1.business.Order;
 import fr.unice.polytech.soa1.lab1.business.StorableContent;
 import fr.unice.polytech.soa1.lab1.utils.ContentType;
+import fr.unice.polytech.soa1.lab1.utils.OrderStatus;
 import fr.unice.polytech.soa1.lab1.utils.exceptions.ContentNotFoundException;
 import fr.unice.polytech.soa1.lab1.ws.DeliveryService;
 
@@ -24,28 +25,34 @@ import java.util.Collection;
 )
 public class DeliveryServiceImpl implements DeliveryService {
 
-    public Collection<Delivery> listDeliveriesModes() {
-        return Storage.findAll(ContentType.DELIVERY);
-    }
-
-    public Delivery displayDeliveryMode(int deliveryId)  throws NullPointerException,IllegalArgumentException {
-        if (deliveryId < 0) {
-            throw new IllegalArgumentException("deliveryId cannot be negative");
-        }
-        Delivery deliveryFound = (Delivery) Storage.read(ContentType.DELIVERY, deliveryId);
-        if (deliveryFound != null) {
-            return deliveryFound;
-        } else {
-            throw new NullPointerException("delivery not found with deliveryId = "+deliveryId);
-        }
-    }
-
-    public Customer provideCustomerData(int orderId, String firstname, String lastname, String address, String zipcode, String city, String country, String phone, String email)
+    /**
+     * Provides customer personal data like its address for shipment and invoice
+     * @param orderId
+     * @param firstname
+     * @param lastname
+     * @param address
+     * @param zipcode
+     * @param city
+     * @param country
+     * @param phone
+     * @param email
+     * @return
+     * @throws NullPointerException
+     * @throws IllegalArgumentException
+     */
+    public Customer provideCustomerShipmentData(int orderId, String firstname, String lastname, String address, String zipcode, String city, String country, String phone, String email)
             throws NullPointerException,IllegalArgumentException{
         if (orderId < 0){
             throw new IllegalArgumentException("orderId cannot be negative");
         }
-        if ( firstname == null || lastname == null || address == null || zipcode == null || city == null || country == null || phone == null || email == null) {
+        if ( firstname == null
+                || lastname == null
+                || address == null
+                || zipcode == null
+                || city == null
+                || country == null
+                || phone == null
+                || email == null) {
             throw new IllegalArgumentException("your argument(s) cannot be empty");
         }
         Order orderFount = (Order) Storage.read(ContentType.ORDER,orderId) ;
@@ -70,6 +77,14 @@ public class DeliveryServiceImpl implements DeliveryService {
         }
     }
 
+    /**
+     * This method must be used to select a delivery mode for shipment
+     * @param orderId
+     * @param deliveryId
+     * @return
+     * @throws NullPointerException
+     * @throws IllegalArgumentException
+     */
     public Delivery chooseDeliveryMode(int orderId, int deliveryId)  throws NullPointerException,IllegalArgumentException{
         if (orderId < 0 || deliveryId < 0) {
             throw new IllegalArgumentException("orderId and deliveryId cannot be negative");
@@ -90,22 +105,5 @@ public class DeliveryServiceImpl implements DeliveryService {
         }
     }
 
-    public Delivery trackDeliveryStatus(int orderId, String email) throws NullPointerException,IllegalArgumentException {
-        if (orderId < 0 ) {
-            throw new IllegalArgumentException("orderId cannot be negative");
-        }
-        if (email == null) {
-            throw new IllegalArgumentException("email cannot be empty");
-        }
-        Order orderFound = (Order) Storage.read(ContentType.ORDER,orderId);
-        if (orderFound != null) {
-            Customer customerInOrder = orderFound.getCustomer();
-            if (customerInOrder != null && (email.equals(customerInOrder.getEmail()))) {
-                return orderFound.getDelivery();
-            }
-            throw new NullPointerException("cannot find the customer in the order "+orderId);
-        } else {
-            throw new NullPointerException("cannot find the order with orderId = "+orderId);
-        }
-    }
+
 }
