@@ -43,6 +43,10 @@ http://cxf.apache.org/blueprint/jaxws http://cxf.apache.org/schemas/blueprint/ja
             implementor="fr.unice.polytech.soa1.lab1.ws.impl.OrderServiceImpl"
             address="/OrderService">
     </jaxws:endpoint>
+    <jaxws:endpoint
+        implementor="fr.unice.polytech.soa1.lab1.ws.impl.BusinessManagementServiceImpl"
+        address="/BusinessManagementService">
+    </jaxws:endpoint>
 
 </blueprint>
 <!-- END SNIPPET: beans -->

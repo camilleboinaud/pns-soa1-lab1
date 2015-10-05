@@ -17,8 +17,8 @@ public class Storage {
 
     private static HashMap<ContentType, Stock> database = new HashMap<ContentType, Stock>();
 
-    public static boolean create(ContentType type, StorableContent object){
-        return database.get(type).create(object);
+    public static <T extends StorableContent> T create(ContentType type, StorableContent object){
+        return (T) database.get(type).create(object);
     }
 
     public static boolean delete(ContentType type, Integer id){
@@ -46,12 +46,11 @@ public class Storage {
             stock = new HashMap<Integer, T>();
         }
 
-        boolean create(T t){
-            if(stock.containsValue(t)){
-                return false;
+        T create(T t){
+            if(!stock.containsValue(t)){
+                stock.put(t.getId(), t);
             }
-            stock.put(t.getId(), t);
-            return true;
+            return t;
         }
 
         boolean delete(Integer id){
