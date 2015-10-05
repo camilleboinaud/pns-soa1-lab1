@@ -5,6 +5,8 @@ import fr.unice.polytech.soa1.lab1.business.*;
 import fr.unice.polytech.soa1.lab1.business.Package;
 import fr.unice.polytech.soa1.lab1.utils.ContentType;
 import fr.unice.polytech.soa1.lab1.utils.Pair;
+import fr.unice.polytech.soa1.lab1.utils.exceptions.ContentNotFoundException;
+import fr.unice.polytech.soa1.lab1.utils.exceptions.RequestFailException;
 import fr.unice.polytech.soa1.lab1.ws.OrderService;
 
 import javax.jws.WebService;
@@ -37,8 +39,14 @@ public class OrderServiceImpl implements OrderService {
      * @param itemId
      * @return
      */
-    public Item displayItem(Integer itemId) {
-        return (Item) Storage.read(ContentType.ITEM, itemId);
+    public Item displayItem(Integer itemId) throws ContentNotFoundException {
+        Item item = (Item) Storage.read(ContentType.ITEM, itemId);
+
+        if(item != null){
+            return item;
+        } else {
+            throw new ContentNotFoundException("The specified item does not exist");
+        }
     }
 
     /**
@@ -54,8 +62,14 @@ public class OrderServiceImpl implements OrderService {
      * @param packageId
      * @return
      */
-    public Package displayPackage(Integer packageId) {
-        return (Package) Storage.read(ContentType.PACKAGE, packageId);
+    public Package displayPackage(Integer packageId) throws ContentNotFoundException{
+        Package packaging = (Package) Storage.read(ContentType.PACKAGE, packageId);
+
+        if(packaging != null){
+            return packaging;
+        } else {
+            throw new ContentNotFoundException("The specified package does not exist");
+        }
     }
 
     /**
@@ -77,12 +91,18 @@ public class OrderServiceImpl implements OrderService {
      * @param quantity
      * @return
      */
-    public Order updateItemToCart(Integer orderId, Integer itemId, Integer quantity) {
+    public Order updateItemToCart(Integer orderId, Integer itemId, Integer quantity)
+            throws ContentNotFoundException, RequestFailException {
         Order order = (Order) Storage.read(ContentType.ORDER, orderId);
-        if(order.addItemToCart((Item) Storage.read(ContentType.ITEM, itemId), quantity)) {
-            return order;
+        if(order != null) {
+            if (order.addItemToCart((Item) Storage.read(ContentType.ITEM, itemId), quantity)) {
+                return order;
+            } else {
+                throw new RequestFailException("Resquest failed : abort. Please check parameters validity.");
+            }
+        } else {
+            throw new ContentNotFoundException("The specified order does not exist");
         }
-        return null;
     }
 
     /**
@@ -91,13 +111,20 @@ public class OrderServiceImpl implements OrderService {
      * @param itemId
      * @return
      */
-    public Order removeItemFromCart(Integer orderId, Integer itemId) {
-        Order order = (Order) Storage.read(ContentType.ORDER, orderId);
-        if(order.removeItemFromCart((Item)Storage.read(ContentType.ITEM, itemId))) {
-            return order;
-        }
+    public Order removeItemFromCart(Integer orderId, Integer itemId)
+            throws ContentNotFoundException, RequestFailException {
 
-        return null;
+        Order order = (Order) Storage.read(ContentType.ORDER, orderId);
+
+        if(order != null) {
+            if (order.removeItemFromCart((Item) Storage.read(ContentType.ITEM, itemId))) {
+                return order;
+            } else {
+                throw new RequestFailException("Resquest failed : abort. Please check parameters validity.");
+            }
+        } else {
+            throw new ContentNotFoundException("The specified order does not exist");
+        }
     }
 
     /**
@@ -106,10 +133,17 @@ public class OrderServiceImpl implements OrderService {
      * @param orderId
      * @param packageId
      */
-    public boolean updatePackagingMode(Integer orderId, Integer packageId) {
+    public boolean updatePackagingMode(Integer orderId, Integer packageId)
+            throws ContentNotFoundException {
+
         Order order = (Order) Storage.read(ContentType.ORDER, orderId);
-        order.setPackaging((Package) Storage.read(ContentType.PACKAGE, packageId));
-        return true;
+
+        if(order != null) {
+            order.setPackaging((Package) Storage.read(ContentType.PACKAGE, packageId));
+            return true;
+        } else  {
+            throw new ContentNotFoundException("The specified order does not exist");
+        }
     }
 
     /**
@@ -117,19 +151,27 @@ public class OrderServiceImpl implements OrderService {
      * @param orderId
      * @return
      */
-    public Collection<Pair<Item, Integer>> displayCart(Integer orderId) {
+    public Collection<Pair<Item, Integer>> displayCart(Integer orderId) throws ContentNotFoundException{
         Order order = (Order) Storage.read(ContentType.ORDER, orderId);
-        return order.getCart();
+        if(order != null) {
+            return order.getCart();
+        } else {
+            throw new ContentNotFoundException("The specified order does not exist");
+        }
     }
 
     /**
      * Empty the cart associated to the specified order
      * @param orderId
      */
-    public boolean emptyCart(Integer orderId) {
-        ((Order) Storage.read(ContentType.ORDER, orderId))
-                .setCart(new ArrayList<Pair<Item, Integer>>());
-        return true;
+    public boolean emptyCart(Integer orderId) throws ContentNotFoundException{
+        Order order = (Order) Storage.read(ContentType.ORDER, orderId);
+        if(order != null) {
+            order.setCart(new ArrayList<Pair<Item, Integer>>());
+            return true;
+        } else {
+            throw new ContentNotFoundException("The specified order does not exist");
+        }
     }
 
     /**
@@ -137,8 +179,13 @@ public class OrderServiceImpl implements OrderService {
      * @param orderId
      * @return
      */
-    public Order displayOrder(Integer orderId) {
-        return (Order) Storage.read(ContentType.ORDER, orderId);
+    public Order displayOrder(Integer orderId) throws ContentNotFoundException{
+        Order order = (Order) Storage.read(ContentType.ORDER, orderId);
+        if(order != null){
+            return order;
+        } else {
+            throw new ContentNotFoundException("The specified order does not exist");
+        }
     }
 
     /**

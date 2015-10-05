@@ -8,7 +8,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 
 /**
  * Created by camille on 28/09/15.
