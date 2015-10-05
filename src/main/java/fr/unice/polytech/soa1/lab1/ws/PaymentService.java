@@ -1,6 +1,8 @@
 package fr.unice.polytech.soa1.lab1.ws;
 
 import fr.unice.polytech.soa1.lab1.business.Invoice;
+import fr.unice.polytech.soa1.lab1.utils.exceptions.ContentNotFoundException;
+import fr.unice.polytech.soa1.lab1.utils.exceptions.RequestFailException;
 
 import javax.jws.WebParam;
 import javax.jws.WebResult;
@@ -16,20 +18,20 @@ public interface PaymentService {
     @WebResult(name="PaymentService_amount")
     double calculateAmount(
             @WebParam(name="orderId") int orderId
-    );
+    ) throws ContentNotFoundException;
 
     @WebResult(name="PaymentService_pay")
     Invoice payOrder(
             @WebParam(name="orderId") int orderId,
             @WebParam(name="creditCardNumber") String creditCardNumber,
             @WebParam(name="email") String email
-    );
+    ) throws RequestFailException, ContentNotFoundException;
 
     @WebResult(name="PaymentService_invoice")
     Invoice issueInvoice(
             @WebParam(name="orderId") int orderId,
             @WebParam(name="email") String email
-    );
+    ) throws ContentNotFoundException, RequestFailException;
 
 
 }
