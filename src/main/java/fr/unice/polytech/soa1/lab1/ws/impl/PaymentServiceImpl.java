@@ -3,11 +3,12 @@ package fr.unice.polytech.soa1.lab1.ws.impl;
 import fr.unice.polytech.soa1.lab1.Storage;
 import fr.unice.polytech.soa1.lab1.business.*;
 import fr.unice.polytech.soa1.lab1.utils.*;
+import fr.unice.polytech.soa1.lab1.utils.exceptions.ContentNotFoundException;
+import fr.unice.polytech.soa1.lab1.utils.exceptions.RequestFailException;
 import fr.unice.polytech.soa1.lab1.ws.PaymentService;
 
 import javax.jws.WebService;
 import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Created by camille on 30/09/15.
@@ -26,18 +27,23 @@ public class PaymentServiceImpl implements PaymentService {
      * @param orderId
      * @return
      */
-    public double calculateAmount(int orderId) {
+    public double calculateAmount(int orderId) throws ContentNotFoundException {
 
         Order order = (Order)Storage.read(ContentType.ORDER, orderId);
         double amount = 0.0;
 
-        for(Pair<Item, Integer> pair : order.getCart()){
-            amount += pair.getRight()*pair.getLeft().getPrice();
-        }
-        amount += order.getDelivery().getPrice();
-        amount += order.getPackaging().getPrice();
+        if(order != null) {
 
-        return amount;
+            for (Pair<Item, Integer> pair : order.getCart()) {
+                amount += pair.getRight() * pair.getLeft().getPrice();
+            }
+            amount += order.getDelivery().getPrice();
+            amount += order.getPackaging().getPrice();
+
+            return amount;
+        } else {
+            throw new ContentNotFoundException("The specified order does not exist");
+        }
     }
 
     /**
@@ -47,19 +53,25 @@ public class PaymentServiceImpl implements PaymentService {
      * @param email
      * @return
      */
-    public Invoice payOrder(int orderId, String creditCardNumber, String email) {
+    public Invoice payOrder(int orderId, String creditCardNumber, String email)
+            throws RequestFailException, ContentNotFoundException{
 
         Invoice invoice = null;
         Order order = (Order)Storage.read(ContentType.ORDER, orderId);
 
-        if(order.getCustomer().getEmail().equals(email) && (Integer.parseInt(creditCardNumber)%2 == 0)) {
-            invoice = getInvoice(order);
-            if(!invoice.isPaid()) {
-                invoice.setPaid();
+        if(order != null) {
+            if (order.getCustomer().getEmail().equals(email) && (Integer.parseInt(creditCardNumber) % 2 == 0)) {
+                invoice = getInvoice(order);
+                if (!invoice.isPaid()) {
+                    invoice.setPaid();
+                }
+                return invoice;
+            } else {
+                throw new RequestFailException("Payment failed, user email doesn't match or credit card number is not valid.");
             }
+        } else {
+            throw new ContentNotFoundException("The specified order does not exists");
         }
-
-        return invoice;
     }
 
     /**
@@ -68,15 +80,19 @@ public class PaymentServiceImpl implements PaymentService {
      * @param email
      * @return
      */
-    public Invoice issueInvoice(int orderId, String email) {
+    public Invoice issueInvoice(int orderId, String email)
+            throws ContentNotFoundException, RequestFailException {
 
         Order order = (Order)Storage.read(ContentType.ORDER, orderId);
-
-        if(order.getCustomer().getEmail().equals(email)){
-            return getInvoice(order);
+        if(order != null) {
+            if (order.getCustomer().getEmail().equals(email)) {
+                return getInvoice(order);
+            } else {
+                throw new RequestFailException("Email given does not match");
+            }
+        } else {
+            throw new ContentNotFoundException("The specified order does not exist");
         }
-
-        return null;
     }
 
 
