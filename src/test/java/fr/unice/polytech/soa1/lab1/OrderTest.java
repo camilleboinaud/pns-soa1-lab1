@@ -6,6 +6,7 @@ import fr.unice.polytech.soa1.lab1.utils.ContentType;
 import fr.unice.polytech.soa1.lab1.utils.Pair;
 import fr.unice.polytech.soa1.lab1.utils.exceptions.ContentNotFoundException;
 import fr.unice.polytech.soa1.lab1.utils.exceptions.RequestFailException;
+import fr.unice.polytech.soa1.lab1.utils.exceptions.RestrictedFonctionalityException;
 import fr.unice.polytech.soa1.lab1.ws.OrderService;
 import fr.unice.polytech.soa1.lab1.ws.impl.OrderServiceImpl;
 import junit.framework.TestCase;
@@ -27,7 +28,7 @@ public class OrderTest extends TestCase {
     }
 
     @Test
-    public void test_updateCart() throws ContentNotFoundException, RequestFailException {
+    public void test_updateCart() throws ContentNotFoundException, RequestFailException, RestrictedFonctionalityException {
         // init is 0
         assertEquals(this.initOrder.getCart().size(), 0);
         // add 100 item No.0
@@ -42,20 +43,20 @@ public class OrderTest extends TestCase {
         this.service.removeItemFromCart(this.orderId,0);
         assertEquals(this.initOrder.getCart().size(),1);
         // empty cart
-        assertTrue(this.service.emptyCart(this.orderId));
+        assertEquals(this.service.emptyCart(this.orderId).getCart().size(), 0);
         assertEquals(this.initOrder.getCart().size(), 0);
     }
 
     @Test
-    public void test_packaging() throws ContentNotFoundException {
+    public void test_packaging() throws ContentNotFoundException, RestrictedFonctionalityException {
         // update packaging
-        assertTrue(this.service.updatePackagingMode(orderId,7));
+        this.service.updatePackagingMode(orderId,7);
         // check
         assertEquals(this.initOrder.getPackaging().getId().intValue(),7);
     }
 
     @Test
-    public void test_deleteOrder() {
+    public void test_deleteOrder() throws RestrictedFonctionalityException {
         Order newOrder = service.startOrder();
         assertTrue(Storage.read(ContentType.ORDER,newOrder.getId())!=null);
         assertTrue(this.service.cancelOrder(newOrder.getId()));
