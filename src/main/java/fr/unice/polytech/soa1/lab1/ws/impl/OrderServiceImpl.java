@@ -176,12 +176,12 @@ public class OrderServiceImpl implements OrderService {
      * @throws NullPointerException
      * @throws IllegalArgumentException
      */
-    public OrderStatus trackOrderStatus(int orderId, String email) throws NullPointerException,IllegalArgumentException {
+    public OrderStatus trackOrderStatus(int orderId, String email) throws ContentNotFoundException,RequestFailException {
         if (orderId < 0 ) {
-            throw new IllegalArgumentException("orderId cannot be negative");
+            throw new RequestFailException("orderId cannot be negative");
         }
         if (email == null) {
-            throw new IllegalArgumentException("Email cannot be empty");
+            throw new RequestFailException("Email cannot be empty");
         }
 
         Order orderFound = (Order) Storage.read(ContentType.ORDER,orderId);
@@ -190,10 +190,10 @@ public class OrderServiceImpl implements OrderService {
             if (customerInOrder != null && (email.equals(customerInOrder.getEmail()))) {
                 return orderFound.getStatus();
             } else {
-                throw new NullPointerException("cannot find the customer in the order " + orderId);
+                throw new ContentNotFoundException("cannot find the customer in the order " + orderId);
             }
         } else {
-            throw new NullPointerException("cannot find the order with orderId = "+orderId);
+            throw new ContentNotFoundException("cannot find the order with orderId = "+orderId);
         }
     }
 

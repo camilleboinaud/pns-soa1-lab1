@@ -3,6 +3,8 @@ package fr.unice.polytech.soa1.lab1.ws.impl;
 import fr.unice.polytech.soa1.lab1.Storage;
 import fr.unice.polytech.soa1.lab1.business.*;
 import fr.unice.polytech.soa1.lab1.utils.*;
+import fr.unice.polytech.soa1.lab1.utils.exceptions.ContentNotFoundException;
+import fr.unice.polytech.soa1.lab1.utils.exceptions.RequestFailException;
 import fr.unice.polytech.soa1.lab1.utils.exceptions.RestrictedFonctionalityException;
 import fr.unice.polytech.soa1.lab1.ws.DeliveryService;
 
@@ -36,10 +38,10 @@ public class DeliveryServiceImpl implements DeliveryService {
      * @throws IllegalArgumentException
      */
     public Customer provideCustomerShipmentData(int orderId, String firstname, String lastname, String address, String zipcode, String city, String country, String phone, String email)
-            throws NullPointerException, IllegalArgumentException, RestrictedFonctionalityException{
+            throws ContentNotFoundException, RestrictedFonctionalityException, RequestFailException {
 
         if (orderId < 0){
-            throw new IllegalArgumentException("orderId cannot be negative");
+            throw new RequestFailException("orderId cannot be negative");
         }
 
         if ( firstname == null
@@ -50,7 +52,7 @@ public class DeliveryServiceImpl implements DeliveryService {
                 || country == null
                 || phone == null
                 || email == null) {
-            throw new IllegalArgumentException("your argument(s) cannot be empty");
+            throw new  RequestFailException("your argument(s) cannot be empty");
         }
         Order orderFount = (Order) Storage.read(ContentType.ORDER,orderId) ;
         if (orderFount != null) {
@@ -76,7 +78,7 @@ public class DeliveryServiceImpl implements DeliveryService {
             }
 
         } else {
-            throw new NullPointerException("order not found with orderId = "+orderId);
+            throw new ContentNotFoundException("order not found with orderId = "+orderId);
         }
     }
 
@@ -89,10 +91,10 @@ public class DeliveryServiceImpl implements DeliveryService {
      * @throws IllegalArgumentException
      */
     public Delivery chooseDeliveryMode(int orderId, int deliveryId)
-            throws NullPointerException,IllegalArgumentException, RestrictedFonctionalityException{
+            throws ContentNotFoundException, RequestFailException, RestrictedFonctionalityException{
 
         if (orderId < 0 || deliveryId < 0) {
-            throw new IllegalArgumentException("orderId and deliveryId cannot be negative");
+            throw new  RequestFailException("orderId and deliveryId cannot be negative");
         }
 
         Order orderFound = (Order) Storage.read(ContentType.ORDER,orderId);
@@ -113,7 +115,7 @@ public class DeliveryServiceImpl implements DeliveryService {
                 message = "cannot find the order with orderId = " + orderId;
             else
                 message = "cannot find the delivery with delivertId = "+ deliveryId;
-            throw new NullPointerException(message);
+            throw new ContentNotFoundException(message);
         }
     }
 

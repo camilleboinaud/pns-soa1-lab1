@@ -62,18 +62,4 @@ public class OrderTest extends TestCase {
         assertTrue(this.service.cancelOrder(newOrder.getId()));
         assertTrue(Storage.read(ContentType.ORDER, newOrder.getId()) == null);
     }
-
-
-    /**
-     * Private helpers
-     */
-/*
-    private SimpleTaxRequest buildSimpleTaxRequest(float income){
-        SimpleTaxRequest req = new SimpleTaxRequest();
-        req.setIdentifier(UUID.randomUUID().toString());
-        req.setIncome(income);
-        return req;
-    }*/
-
-
 }

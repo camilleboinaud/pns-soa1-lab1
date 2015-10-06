@@ -4,6 +4,7 @@ import com.sun.istack.NotNull;
 import fr.unice.polytech.soa1.lab1.business.*;
 import fr.unice.polytech.soa1.lab1.utils.OrderStatus;
 import fr.unice.polytech.soa1.lab1.utils.exceptions.ContentNotFoundException;
+import fr.unice.polytech.soa1.lab1.utils.exceptions.RequestFailException;
 import fr.unice.polytech.soa1.lab1.utils.exceptions.RestrictedFonctionalityException;
 
 import javax.jws.WebParam;
@@ -29,12 +30,12 @@ public interface DeliveryService {
             @WebParam(name = "country") String country,
             @WebParam(name = "phone") String phone,
             @WebParam(name = "email") String email
-    ) throws NullPointerException, IllegalArgumentException, RestrictedFonctionalityException;
+    ) throws ContentNotFoundException, RequestFailException, RestrictedFonctionalityException;
 
     @WebResult(name = "DeliveryService_choose_delivery")
     Delivery chooseDeliveryMode(
             @WebParam(name = "orderId") int orderId,
             @WebParam(name = "deliveryId") int deliveryId
-    ) throws NullPointerException,IllegalArgumentException, RestrictedFonctionalityException;
+    ) throws ContentNotFoundException, RequestFailException, RestrictedFonctionalityException;
 
 }

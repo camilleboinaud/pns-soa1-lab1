@@ -62,6 +62,6 @@ public interface OrderService {
     OrderStatus trackOrderStatus(
             @WebParam(name = "orderId") int orderId,
             @WebParam(name = "email") String email
-    ) throws NullPointerException,IllegalArgumentException;
+    ) throws RequestFailException,ContentNotFoundException;
 
 }
