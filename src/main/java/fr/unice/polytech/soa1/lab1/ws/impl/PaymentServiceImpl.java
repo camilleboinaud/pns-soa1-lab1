@@ -5,6 +5,7 @@ import fr.unice.polytech.soa1.lab1.business.*;
 import fr.unice.polytech.soa1.lab1.utils.*;
 import fr.unice.polytech.soa1.lab1.utils.exceptions.ContentNotFoundException;
 import fr.unice.polytech.soa1.lab1.utils.exceptions.RequestFailException;
+import fr.unice.polytech.soa1.lab1.utils.exceptions.RestrictedFonctionalityException;
 import fr.unice.polytech.soa1.lab1.ws.PaymentService;
 
 import javax.jws.WebService;
@@ -54,21 +55,25 @@ public class PaymentServiceImpl implements PaymentService {
      * @return
      */
     public Invoice payOrder(int orderId, String creditCardNumber, String email)
-            throws RequestFailException, ContentNotFoundException{
+            throws RequestFailException, ContentNotFoundException, RestrictedFonctionalityException{
 
         Invoice invoice = null;
         Order order = (Order)Storage.read(ContentType.ORDER, orderId);
 
         if(order != null) {
-            if (order.getCustomer().getEmail().equals(email) && (Integer.parseInt(creditCardNumber) % 2 == 0)) {
-                invoice = getInvoice(order);
-                if (!invoice.isPaid()) {
-                    invoice.setPaid();
+            if(order.getStatus().equals(OrderStatus.NOT_VALIDATED)) {
+                if (order.getCustomer().getEmail().equals(email) && (Integer.parseInt(creditCardNumber) % 2 == 0)) {
+                    invoice = getInvoice(order);
+                    if (!invoice.isPaid()) {
+                        invoice.setPaid();
+                    }
+                    invoice.getOrder().setStatus(OrderStatus.IN_PREPARATION);
+                    return invoice;
+                } else {
+                    throw new RequestFailException("Payment failed, user email doesn't match or credit card number is not valid.");
                 }
-                invoice.getOrder().setStatus(OrderStatus.IN_PREPARATION);
-                return invoice;
             } else {
-                throw new RequestFailException("Payment failed, user email doesn't match or credit card number is not valid.");
+                throw new RestrictedFonctionalityException("Your order has already been validated");
             }
         } else {
             throw new ContentNotFoundException("The specified order does not exists");
@@ -82,14 +87,18 @@ public class PaymentServiceImpl implements PaymentService {
      * @return
      */
     public Invoice issueInvoice(int orderId, String email)
-            throws ContentNotFoundException, RequestFailException {
+            throws ContentNotFoundException, RequestFailException, RestrictedFonctionalityException {
 
         Order order = (Order)Storage.read(ContentType.ORDER, orderId);
         if(order != null) {
-            if (order.getCustomer().getEmail().equals(email)) {
-                return getInvoice(order);
+            if(!order.getStatus().equals(OrderStatus.NOT_VALIDATED)) {
+                if (order.getCustomer().getEmail().equals(email)) {
+                    return getInvoice(order);
+                } else {
+                    throw new RequestFailException("Email given does not match");
+                }
             } else {
-                throw new RequestFailException("Email given does not match");
+                throw new RestrictedFonctionalityException("You must pay your oder to validate it before");
             }
         } else {
             throw new ContentNotFoundException("The specified order does not exist");

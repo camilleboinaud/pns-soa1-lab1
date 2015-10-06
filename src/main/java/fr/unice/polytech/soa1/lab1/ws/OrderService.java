@@ -6,6 +6,7 @@ import fr.unice.polytech.soa1.lab1.utils.OrderStatus;
 import fr.unice.polytech.soa1.lab1.utils.Pair;
 import fr.unice.polytech.soa1.lab1.utils.exceptions.ContentNotFoundException;
 import fr.unice.polytech.soa1.lab1.utils.exceptions.RequestFailException;
+import fr.unice.polytech.soa1.lab1.utils.exceptions.RestrictedFonctionalityException;
 
 import javax.jws.WebParam;
 import javax.jws.WebResult;
@@ -28,19 +29,19 @@ public interface OrderService {
             @WebParam(name = "orderId") Integer orderId,
             @WebParam(name = "itemId") Integer itemId,
             @WebParam(name = "quantity") Integer quantity
-    ) throws RequestFailException, ContentNotFoundException;
+    ) throws RequestFailException, ContentNotFoundException, RestrictedFonctionalityException;
 
     @WebResult(name = "OrderService_remove_item_cart")
     Order removeItemFromCart(
             @WebParam(name = "orderId") Integer orderId,
             @WebParam(name = "itemId") Integer itemId
-    ) throws RequestFailException, ContentNotFoundException;
+    ) throws RequestFailException, ContentNotFoundException, RestrictedFonctionalityException;
 
     @WebResult(name = "OrderService_update_packaging")
     Order updatePackagingMode(
             @WebParam(name = "orderId") Integer orderId,
             @WebParam(name = "packageId") Integer packageId
-    ) throws ContentNotFoundException;
+    ) throws ContentNotFoundException, RestrictedFonctionalityException;
 
     @WebResult(name = "OrderService_display_cart")
     Collection<Pair<Item, Integer>> displayCart(
@@ -50,12 +51,12 @@ public interface OrderService {
     @WebResult(name = "OrderService_empty_cart")
     Order emptyCart(
             @WebParam(name = "orderId") Integer orderId
-    ) throws ContentNotFoundException;
+    ) throws ContentNotFoundException, RestrictedFonctionalityException;
 
     @WebResult(name = "OrderService_cancel_order")
     boolean cancelOrder(
             @WebParam(name = "orderId") Integer orderId
-    );
+    ) throws RestrictedFonctionalityException;
 
     @WebResult(name = "DeliveryService_track_status")
     OrderStatus trackOrderStatus(

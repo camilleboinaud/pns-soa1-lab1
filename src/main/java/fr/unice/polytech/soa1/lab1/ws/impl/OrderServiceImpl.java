@@ -8,6 +8,7 @@ import fr.unice.polytech.soa1.lab1.utils.OrderStatus;
 import fr.unice.polytech.soa1.lab1.utils.Pair;
 import fr.unice.polytech.soa1.lab1.utils.exceptions.ContentNotFoundException;
 import fr.unice.polytech.soa1.lab1.utils.exceptions.RequestFailException;
+import fr.unice.polytech.soa1.lab1.utils.exceptions.RestrictedFonctionalityException;
 import fr.unice.polytech.soa1.lab1.ws.OrderService;
 
 import javax.jws.WebService;
@@ -47,14 +48,19 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     public Order updateItemToCart(Integer orderId, Integer itemId, Integer quantity)
-            throws ContentNotFoundException, RequestFailException {
+            throws ContentNotFoundException, RequestFailException, RestrictedFonctionalityException {
         Order order = (Order) Storage.read(ContentType.ORDER, orderId);
         if(order != null) {
-            if (order.addItemToCart((Item) Storage.read(ContentType.ITEM, itemId), quantity)) {
-                return Storage.merge(ContentType.ORDER, order);
+            if(order.getStatus().equals(OrderStatus.NOT_VALIDATED)){
+                if (order.addItemToCart((Item) Storage.read(ContentType.ITEM, itemId), quantity)) {
+                    return Storage.merge(ContentType.ORDER, order);
+                } else {
+                    throw new RequestFailException("Resquest failed : abort. Please check parameters validity.");
+                }
             } else {
-                throw new RequestFailException("Resquest failed : abort. Please check parameters validity.");
+                throw new RestrictedFonctionalityException("Your order has already been validated");
             }
+
         } else {
             throw new ContentNotFoundException("The specified order does not exist");
         }
@@ -67,16 +73,21 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     public Order removeItemFromCart(Integer orderId, Integer itemId)
-            throws ContentNotFoundException, RequestFailException {
+            throws ContentNotFoundException, RequestFailException, RestrictedFonctionalityException {
 
         Order order = (Order) Storage.read(ContentType.ORDER, orderId);
 
         if(order != null) {
-            if (order.removeItemFromCart((Item) Storage.read(ContentType.ITEM, itemId))) {
-                return order;
+            if(order.getStatus().equals(OrderStatus.NOT_VALIDATED)){
+                if (order.removeItemFromCart((Item) Storage.read(ContentType.ITEM, itemId))) {
+                    return order;
+                } else {
+                    throw new RequestFailException("Resquest failed : abort. Please check parameters validity.");
+                }
             } else {
-                throw new RequestFailException("Resquest failed : abort. Please check parameters validity.");
+                throw new RestrictedFonctionalityException("Your order has already been validated");
             }
+
         } else {
             throw new ContentNotFoundException("The specified order does not exist");
         }
@@ -89,13 +100,18 @@ public class OrderServiceImpl implements OrderService {
      * @param packageId
      */
     public Order updatePackagingMode(Integer orderId, Integer packageId)
-            throws ContentNotFoundException {
+            throws ContentNotFoundException, RestrictedFonctionalityException {
 
         Order order = (Order) Storage.read(ContentType.ORDER, orderId);
 
         if(order != null) {
-            order.setPackaging((Package) Storage.read(ContentType.PACKAGE, packageId));
-            return Storage.merge(ContentType.ORDER, order);
+            if(order.getStatus().equals(OrderStatus.NOT_VALIDATED)){
+                order.setPackaging((Package) Storage.read(ContentType.PACKAGE, packageId));
+                return Storage.merge(ContentType.ORDER, order);
+            } else {
+                throw new RestrictedFonctionalityException("Your order has already been validated");
+            }
+
         } else  {
             throw new ContentNotFoundException("The specified order does not exist");
         }
@@ -119,11 +135,16 @@ public class OrderServiceImpl implements OrderService {
      * Empty the cart associated to the specified order
      * @param orderId
      */
-    public Order emptyCart(Integer orderId) throws ContentNotFoundException{
+    public Order emptyCart(Integer orderId) throws ContentNotFoundException, RestrictedFonctionalityException {
         Order order = (Order) Storage.read(ContentType.ORDER, orderId);
         if(order != null) {
-            order.setCart(new ArrayList<Pair<Item, Integer>>());
-            return Storage.merge(ContentType.ORDER, order);
+            if(order.getStatus().equals(OrderStatus.NOT_VALIDATED)){
+                order.setCart(new ArrayList<Pair<Item, Integer>>());
+                return Storage.merge(ContentType.ORDER, order);
+            } else {
+                throw new RestrictedFonctionalityException("Your order has already been validated");
+            }
+
         } else {
             throw new ContentNotFoundException("The specified order does not exist");
         }
@@ -134,9 +155,17 @@ public class OrderServiceImpl implements OrderService {
      * Be careful, a canceled order cannot be recovered.
      * @param orderId
      */
-    public boolean cancelOrder(Integer orderId) {
-        Storage.delete(ContentType.ORDER, orderId);
-        return true;
+    public boolean cancelOrder(Integer orderId) throws RestrictedFonctionalityException {
+        Order order = (Order)Storage.read(ContentType.ORDER, orderId);
+
+        if(order != null && order.getStatus().equals(OrderStatus.NOT_VALIDATED)){
+            Storage.delete(ContentType.ORDER, orderId);
+            return true;
+        } else {
+            throw new RestrictedFonctionalityException("Your order has already been validated");
+        }
+
+
     }
 
     /**
