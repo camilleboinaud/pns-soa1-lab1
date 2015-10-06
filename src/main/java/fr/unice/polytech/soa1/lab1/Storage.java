@@ -51,7 +51,7 @@ public class Storage {
         }
 
         T create(T t){
-            if(!stock.containsValue(t)){
+            if(!stock.containsKey(t.getId())){
                 stock.put(t.getId(), t);
             }
             return t;

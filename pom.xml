@@ -27,6 +27,13 @@
             <artifactId>json</artifactId>
             <version>20141113</version>
         </dependency>
+        <!-- JUnit for unit tests purpose -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
         <!-- CXF HTTP/SOAP implementation -->
         <dependency>
             <groupId>org.apache.cxf</groupId>
